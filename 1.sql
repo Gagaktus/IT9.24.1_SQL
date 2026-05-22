@@ -1,0 +1,11 @@
+ALTER TABLE stock ALTER COLUMN warehouse_id SET NOT NULL, ALTER COLUMN product_id SET NOT NULL;
+ALTER TABLE incoming_shipments ALTER COLUMN supplier_id SET NOT NULL, ALTER COLUMN product_id SET NOT NULL, ALTER COLUMN warehouse_id SET NOT NULL;
+ALTER TABLE outgoing_shipments ALTER COLUMN product_id SET NOT NULL, ALTER COLUMN from_warehouse SET NOT NULL;
+ALTER TABLE stocktaking ALTER COLUMN warehouse_id SET NOT NULL, ALTER COLUMN product_id SET NOT NULL, ALTER COLUMN system_quantity SET NOT NULL, ALTER COLUMN actual_quantity SET NOT NULL, ALTER COLUMN difference SET NOT NULL;
+ALTER TABLE stock ADD CONSTRAINT stock_quantity_nonnegative CHECK (quantity >= 0);
+ALTER TABLE stock ADD CONSTRAINT stock_reserved_check CHECK (reserved_quantity >= 0 AND reserved_quantity <= quantity);
+ALTER TABLE transfers ADD CONSTRAINT transfers_from_to_diff CHECK (from_warehouse != to_warehouse);
+ALTER TABLE transfers ADD CONSTRAINT transfers_status_check CHECK (status IN ('pending', 'completed', 'cancelled'));
+ALTER TABLE product_categories ADD CONSTRAINT unique_category_name UNIQUE (name);
+ALTER TABLE suppliers ADD CONSTRAINT unique_supplier_name UNIQUE (name);
+ALTER TABLE stock ADD CONSTRAINT stock_warehouse_product_unique UNIQUE (warehouse_id, product_id);
